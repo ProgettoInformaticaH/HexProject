@@ -90,7 +90,7 @@ public:
     void sinistra();
     void Reset();
     void SincronizzaMatrice();
-    void getpos(int & posR,int & posC);
+    int getpos(int & posR,int & posC);
     void setpos(int posR,int posC,int nGioc);
 
     int posR, posC;
@@ -106,7 +106,7 @@ public:
     GraficHex(int d)
     {
         Tartaruga t;
-        t.Nasconditi();
+        //t.Nasconditi();
         t.TempoPasso(0);
         t.Salta(-250,-200);     ///Da sistemare
         int l=22;               ///Da sistemare
@@ -116,10 +116,10 @@ public:
 
     void Presentazione();
     void DisegnaM();            //Disegna i pallini dentro la griglia
-    void setposColore(int posR,int posC);       //Data la posizione in matrice in base al colore riscontrato lo disegna in base alla posizione degli indici
+    void setposColore(int posR,int posC,int ngioc);       //Data la posizione in matrice in base al colore riscontrato lo disegna in base alla posizione degli indici
     void VisualeWin();
     void Pareggio();
-    void NomeGioc();
+    void NomeGioc();        //opzionale
     void EsagonoBase(Tartaruga & t,int l)
     {
 
