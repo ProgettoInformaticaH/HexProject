@@ -8,7 +8,7 @@ using namespace std;
 class DatabaseHex
 {
 public:
-    DatabaseHex(int d)
+    void resM(int d)
     {
         //Resize mSelection
         mSelection.resize(d);
@@ -76,24 +76,114 @@ public:
 class ModelHex
 {
 public:
-//Rosso=1       Blu=2       Vuoto=0     Selezione=3
+    //Rosso=1       Blu=2       Vuoto=0     Selezione=3
+    int d;
+    DatabaseHex DbModel;
     ModelHex(int d)
     {
-        DatabaseHex DbModel(d);
-        DbModel.printmSelection();
+        DbModel.resM(d);
+        d=d;
     }
     ///Funzioni da implementare
     int HaiVinto(); //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
-    void giu();
-    void su();
-    void destra();
-    void sinistra();
-    void Reset();
-    void SincronizzaMatrice();
-    int getpos(int & posR,int & posC);
-    void setpos(int posR,int posC,int nGioc);
 
-    int posR, posC;
+
+
+
+
+        void destra()
+    {
+        if(posC<d-2&&posR>1)
+        {
+            posC++;
+            posR--;
+        }
+
+
+    }
+
+    void sinistra()
+    {
+        if(posC>1&&posR<d-2)
+        {
+            posC--;
+            posR++;
+        }
+
+
+    }
+
+    void su()
+    {
+        if(posR>1&&posC>1)
+        {
+            posR--;
+            posC--;
+        }
+
+
+    }
+
+    void giu()
+    {
+        if(posR<d-2&&posC<d-2)
+        {
+            posR++;
+            posC++;
+        }
+
+    }
+
+
+    int SelezioneTemp(int nGioc)
+    {
+        ///valori tasti
+
+            int tcor=KeyCode();
+            if(tcor==18432) su();
+            if(tcor==19200) sinistra();
+            if(tcor==19712) destra();
+            if(tcor==20480) giu();
+    }
+
+
+
+    void Reset();
+
+    void SincronizzaMatrice()
+    {
+        for(int i=0;i<d;i++)
+            for(int j=0;j<d;j++)
+                DbModel.mSelection[i][j]=DbModel.mReal[i][j];
+
+    }
+
+    int getvalReal()
+    {
+        return DbModel.mReal[posR][posC];
+    }
+
+    int getvalTemp()
+    {
+        return DbModel.mSelection[posR][posC];
+    }
+
+    void setposReal(int nGioc)
+    {
+        DbModel.mReal[posR][posC]=nGioc;
+        SincronizzaMatrice();
+    }
+    void selposTemp(int nGioc)
+    {
+        DbModel.mSelection[posR][posC]=nGioc+2;
+    }
+
+    int gtvalmGraf(int pc, int pr)
+    {
+        return DbModel.mSelection[pr][pc];
+    }
+    int posR=1;
+    int posC=1;
 
 };
 
@@ -103,23 +193,80 @@ class GraficHex
 {
 public:
 
+    Tartaruga t;
+    int l=22;
     GraficHex(int d)
     {
-        Tartaruga t;
-        //t.Nasconditi();
+        t.Nasconditi();
         t.TempoPasso(0);
-        t.Salta(-250,-200);     ///Da sistemare
-        int l=22;               ///Da sistemare
+        t.Salta(-250,-200);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
     }
 
 
     void Presentazione();
-    void DisegnaM();            //Disegna i pallini dentro la griglia
-    void setposColore(int posR,int posC,int ngioc);       //Data la posizione in matrice in base al colore riscontrato lo disegna in base alla posizione degli indici
+
+    void DisegnaM(int d,ModelHex m)            //Disegna i pallini dentro la griglia di standard
+    {
+        float xc,xy;
+        t.DoveSei(xc,xy);
+        for(int i=0;i<d;i++)
+            for(int j=0;j<d;j++)
+        {
+            t.Salta(xc,xy);
+            setposColore(i,j,m.gtvalmGraf(i,j));
+            t.D(60);
+        }
+        t.Salta(xc,xy);
+    }
+
+    void setpallina(int posR,int posC,ModelHex p)
+    {
+        float xc,xy;
+        t.DoveSei(xc,xy);
+        setposColore(posR,posC,p.DbModel.mSelection[posR][posC]);
+        t.Salta(xc,xy);
+        t.D(60);
+    }
+
+
+    void setposColore(int posR,int posC,int col)       //Data il colore e la posizione degli indici lo colora
+    {
+        t.AlzaPennello();
+        for(int i=0;i<=posC;i++)
+        {
+            t.A(l);
+            t.D(60);
+            t.A(l);
+            t.S(60);
+        }
+        t.D(120);
+        for(int i=0;i<=posR;i++)
+        {
+            t.A(l);
+            t.D(60);
+            t.A(l);
+            t.S(60);
+        }
+        t.S(180);
+        t.A(l);
+        if(col==0)        t.CambiaColorePennello(Bianco);
+        if(col==1)        t.CambiaColorePennello(Rosso);
+        if(col==2)        t.CambiaColorePennello(Blu);
+        if(col==3)        t.CambiaColorePennello(RossoChiaro);
+        if(col==4)        t.CambiaColorePennello(BluChiaro);
+        t.AbbassaPennello();
+        t.Cerchio(15);
+    }
+
+
+
+
     void VisualeWin();
     void Pareggio();
     void NomeGioc();        //opzionale
+
+
     void EsagonoBase(Tartaruga & t,int l)
     {
 
@@ -129,6 +276,7 @@ public:
             t.S(60);
         }
     }
+
     void GrigliaEsagono(Tartaruga & t,int l,int d)       //Lasciata in secondo piano sempre
     {
         t.D(120);
@@ -157,9 +305,11 @@ public:
             t.A(l);
             t.D(180);
         }
+        t.S(60);
+        t.A(-l);
 
-            WaitESC();
     }
+
     void Menu();
 
 };
@@ -173,6 +323,14 @@ public:
         ///Usata come classe debug adesso successivamente come unica classe da usare nel main
         ModelHex a(d);
         GraficHex b(d);
+        b.DisegnaM(d,a);
+
+
+
+
+
+        WaitESC();
+
     }
 
 };
