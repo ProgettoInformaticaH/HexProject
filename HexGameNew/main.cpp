@@ -102,22 +102,64 @@ public:
 class GraficHex
 {
 public:
-    Tartaruga t;
-    GraficHex()
+
+    GraficHex(int d)
     {
+        Tartaruga t;
         t.Nasconditi();
         t.TempoPasso(0);
+        t.Salta(-250,-200);     ///Da sistemare
+        int l=22;               ///Da sistemare
+        GrigliaEsagono(t,l,d);
     }
 
 
     void Presentazione();
-    void DisegnaM();        //Disegna i pallini dentro la griglia
+    void DisegnaM();            //Disegna i pallini dentro la griglia
     void setposColore(int posR,int posC);       //Data la posizione in matrice in base al colore riscontrato lo disegna in base alla posizione degli indici
     void VisualeWin();
     void Pareggio();
     void NomeGioc();
-    void EsagonoBase();
-    void GrigliaEsagono();      //Lasciata in secondo piano sempre
+    void EsagonoBase(Tartaruga & t,int l)
+    {
+
+        for (int i=0;i<6;i++)
+        {
+            t.A(l);
+            t.S(60);
+        }
+    }
+    void GrigliaEsagono(Tartaruga & t,int l,int d)       //Lasciata in secondo piano sempre
+    {
+        t.D(120);
+        for (int j=0;j<d;j++)
+        {
+            for (int i=0;i<d;i++)
+            {
+                EsagonoBase(t,l);
+                //t.CambiaColorePennello(Rosso);
+                t.A(l);
+                t.S(60);
+                t.A(l);
+                t.D(60);
+                //t.CambiaColorePennello(Bianco);
+            }
+            t.S(120);
+            t.A(l);
+            t.S(60);
+            for (int p=0;p<d-1;p++)
+            {
+                t.A(l);
+                t.S(60);
+                t.A(l);
+                t.D(60);
+            }
+            t.A(l);
+            t.D(180);
+        }
+
+            WaitESC();
+    }
     void Menu();
 
 };
@@ -130,13 +172,14 @@ public:
     {
         ///Usata come classe debug adesso successivamente come unica classe da usare nel main
         ModelHex a(d);
+        GraficHex b(d);
     }
 
 };
 
 int main()
 {
-    int d=7;
+    int d=11;
     Game Gioco(d);
     return 0;
 }
