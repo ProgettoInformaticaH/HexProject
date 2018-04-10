@@ -155,8 +155,8 @@ public:
             int tcor=KeyCode();
             //grf.setptemp(posR,posC,0);
             if(tcor==18432) {su(); vcol=getvalTemp();}
-            else if(tcor==19200) {sinistra(); vcol=getvalTemp();}
-            else if(tcor==19712) {destra(); vcol=getvalTemp();}
+            else if(tcor==19712) {sinistra(); vcol=getvalTemp();}
+            else if(tcor==19200) {destra(); vcol=getvalTemp();}
             else if(tcor==20480) {giu(); vcol=getvalTemp();}
             else if(tcor==32)    {spazio(nGioc); return true;}
             //grf.setptemp(posR,posC,getvalTemp());
@@ -193,15 +193,15 @@ public:
     }
     void selposTemp(int nGioc)
     {
-        DbModel.mSelection[posR][posC]=nGioc+2;
+        DbModel.mSelection[posR][posC]=(nGioc+2);
     }
 
     int gtvalmGraf(int pc, int pr)
     {
         return DbModel.mSelection[pr][pc];
     }
-    int posR=1;
-    int posC=1;
+    int posR=2;
+    int posC=2;
 
 };
 
@@ -219,6 +219,7 @@ public:
         t.TempoPasso(0);
         t.Salta(-250,-200);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
+
     }
 
 
@@ -357,16 +358,16 @@ public:
         while(a.HaiVinto()==0&&!a.pareggio())    ///pareggio torna falso
         {
             settato=false;
-            int vcol=a.getvalTemp();
+            int vcol;
             while(!settato)
             {
                 a.DbModel.printmReal();
                 a.DbModel.printmSelection();
                 settato=a.SelezioneTemp(nGioc,vcol);
-                a.selposTemp(nGioc);
-                b.setpallina(a);
-                b.setptemp(a.posR,a.posC,vcol);
 
+                a.selposTemp(nGioc);
+                b.DisegnaM(d,a);
+                a.selposTemp(vcol-2);
             }
 
             a.setposReal(nGioc);
