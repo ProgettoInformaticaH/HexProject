@@ -70,29 +70,38 @@ public:
         }
     }
 };
-
+class GraficHex;
 
 ///Classe gestione funzionamento del gioco
 class ModelHex
 {
+
 public:
-    //Rosso=1       Blu=2       Vuoto=0     Selezione=3
     int d;
+    //Rosso=1       Blu=2       Vuoto=0     Selezione=3
+
     DatabaseHex DbModel;
-    ModelHex(int d)
+    ModelHex(int d1)
     {
-        DbModel.resM(d);
-        d=d;
+        DbModel.resM(d1);
+        d=d1;
+
     }
     ///Funzioni da implementare
-    int HaiVinto(); //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
+    int HaiVinto() //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
+        {
+            return 0;
+        }
 
-
-
+    bool pareggio()
+    {
+        return false;
+    }
 
 
         void destra()
     {
+
         if(posC<d-2&&posR>1)
         {
             posC++;
@@ -134,16 +143,25 @@ public:
 
     }
 
+    void spazio(int nGioc)
+    {
+        if(getvalTemp()==0)
+            selposTemp(nGioc);
+    }
 
-    int SelezioneTemp(int nGioc)
+    bool SelezioneTemp(int nGioc,int & vcol)
     {
         ///valori tasti
-
             int tcor=KeyCode();
-            if(tcor==18432) su();
-            if(tcor==19200) sinistra();
-            if(tcor==19712) destra();
-            if(tcor==20480) giu();
+            //grf.setptemp(posR,posC,0);
+            if(tcor==18432) {su(); vcol=getvalTemp();}
+            else if(tcor==19200) {sinistra(); vcol=getvalTemp();}
+            else if(tcor==19712) {destra(); vcol=getvalTemp();}
+            else if(tcor==20480) {giu(); vcol=getvalTemp();}
+            else if(tcor==32)    {spazio(nGioc); return true;}
+            //grf.setptemp(posR,posC,getvalTemp());
+            return false;
+
     }
 
 
@@ -220,11 +238,20 @@ public:
         t.Salta(xc,xy);
     }
 
-    void setpallina(int posR,int posC,ModelHex p)
+    void setpallina(ModelHex p)
     {
         float xc,xy;
         t.DoveSei(xc,xy);
-        setposColore(posR,posC,p.DbModel.mSelection[posR][posC]);
+        setposColore(p.posR,p.posC,p.DbModel.mSelection[p.posR][p.posC]);
+        t.Salta(xc,xy);
+        t.D(60);
+    }
+
+       void setptemp(int posR,int posC,int col)
+    {
+        float xc,xy;
+        t.DoveSei(xc,xy);
+        setposColore( posR, posC, col);
         t.Salta(xc,xy);
         t.D(60);
     }
@@ -262,7 +289,7 @@ public:
 
 
 
-    void VisualeWin();
+    void VisualeWin(int nGioc);
     void Pareggio();
     void NomeGioc();        //opzionale
 
@@ -318,26 +345,52 @@ public:
 class Game
 {
 public:
-    Game(int d)
+    Game()
     {
+        int d=11;
         ///Usata come classe debug adesso successivamente come unica classe da usare nel main
         ModelHex a(d);
         GraficHex b(d);
         b.DisegnaM(d,a);
+        bool settato;
+        int nGioc=1,nMossa=1;
+        while(a.HaiVinto()==0&&!a.pareggio())    ///pareggio torna falso
+        {
+            settato=false;
+            int vcol=a.getvalTemp();
+            while(!settato)
+            {
+                a.DbModel.printmReal();
+                a.DbModel.printmSelection();
+                settato=a.SelezioneTemp(nGioc,vcol);
+                a.selposTemp(nGioc);
+                b.setpallina(a);
+                b.setptemp(a.posR,a.posC,vcol);
 
+            }
 
+            a.setposReal(nGioc);
+            b.setpallina(a);
+            a.SincronizzaMatrice();
+            nMossa++;
 
+            if(nMossa%2==0) nGioc=2;
+            else    nGioc=1;
 
-
-        WaitESC();
-
+        }
+        /*
+        if(a.pareggio())
+            b.pareggio();
+        else
+            b.VisualeWin(a.HaiVinto());*/
+            WaitESC();
     }
+
 
 };
 
 int main()
 {
-    int d=11;
-    Game Gioco(d);
+    Game Gioco;
     return 0;
 }
