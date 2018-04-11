@@ -1,7 +1,6 @@
 #include <iostream>
 #include<vector>
 #include<Tarta_CodeBlocks.h>
-
 using namespace std;
 
 ///Classe gestione Dati di gioco
@@ -95,17 +94,20 @@ public:
 
     bool pareggio()
     {
-        return false;
+        for(int i=0;i<d;i++)
+            for(int j=0;j<d;j++)
+                if(DbModel.mReal[i][j]==0) return false;
+            return true;
     }
 
 
         void destra()
     {
 
-        if(posC<d-2&&posR>1)
+        if(posC<d-2&&posR>=1)
         {
             posC++;
-            posR--;
+            //posR--;
         }
 
 
@@ -113,10 +115,10 @@ public:
 
     void sinistra()
     {
-        if(posC>1&&posR<d-2)
+        if(posC>1&&posR<d-1)
         {
             posC--;
-            posR++;
+            //posR++;
         }
 
 
@@ -143,9 +145,9 @@ public:
 
     }
 
-    void spazio(int nGioc)
+    bool spazio(int nGioc)
     {
-        if(getvalTemp()==0)
+        if(getvalReal()==0)
             selposTemp(nGioc);
     }
 
@@ -155,10 +157,10 @@ public:
             int tcor=KeyCode();
             //grf.setptemp(posR,posC,0);
             if(tcor==18432) {su(); vcol=getvalTemp();}
-            else if(tcor==19712) {sinistra(); vcol=getvalTemp();}
-            else if(tcor==19200) {destra(); vcol=getvalTemp();}
+            else if(tcor==19200) {sinistra(); vcol=getvalTemp();}
+            else if(tcor==19712) {destra(); vcol=getvalTemp();}
             else if(tcor==20480) {giu(); vcol=getvalTemp();}
-            else if(tcor==32)    {spazio(nGioc); return true;}
+            else if(tcor==32)    {if(spazio(nGioc)) return true;}
             //grf.setptemp(posR,posC,getvalTemp());
             return false;
 
@@ -173,7 +175,6 @@ public:
         for(int i=0;i<d;i++)
             for(int j=0;j<d;j++)
                 DbModel.mSelection[i][j]=DbModel.mReal[i][j];
-
     }
 
     int getvalReal()
@@ -200,8 +201,8 @@ public:
     {
         return DbModel.mSelection[pr][pc];
     }
-    int posR=2;
-    int posC=2;
+    int posR=1;
+    int posC=1;
 
 };
 
@@ -210,20 +211,33 @@ public:
 class GraficHex
 {
 public:
-
     Tartaruga t;
-    int l=22;
+    float l=25;
     GraficHex(int d)
     {
         t.Nasconditi();
         t.TempoPasso(0);
+        Presentazione();
+        t.ClearScreen();
         t.Salta(-250,-200);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
 
     }
 
 
-    void Presentazione();
+    void Presentazione()
+    {
+        string s="Hex \n\n\n By:    Samuele Stefanello";
+        t.Jump(-300,200);
+        delay(300);
+        for(int i=0;i<s.size();i++)
+        {
+            t<<s[i];
+            if(s[i]!=' '&&s[i]!='\n')
+            delay(150);
+        }
+        delay(1000);
+    }
 
     void DisegnaM(int d,ModelHex m)            //Disegna i pallini dentro la griglia di standard
     {
@@ -284,7 +298,7 @@ public:
         if(col==3)        t.CambiaColorePennello(RossoChiaro);
         if(col==4)        t.CambiaColorePennello(BluChiaro);
         t.AbbassaPennello();
-        t.Cerchio(15);
+        t.Cerchio((l*2)/3);
     }
 
 
@@ -295,7 +309,7 @@ public:
     void NomeGioc();        //opzionale
 
 
-    void EsagonoBase(Tartaruga & t,int l)
+    void EsagonoBase(Tartaruga & t,float l)
     {
 
         for (int i=0;i<6;i++)
@@ -305,7 +319,7 @@ public:
         }
     }
 
-    void GrigliaEsagono(Tartaruga & t,int l,int d)       //Lasciata in secondo piano sempre
+    void GrigliaEsagono(Tartaruga & t,float l,int d)       //Lasciata in secondo piano sempre
     {
         t.D(120);
         for (int j=0;j<d;j++)
@@ -348,26 +362,37 @@ class Game
 public:
     Game()
     {
-        int d=11;
+        int d=10;
         ///Usata come classe debug adesso successivamente come unica classe da usare nel main
         ModelHex a(d);
         GraficHex b(d);
         b.DisegnaM(d,a);
         bool settato;
-        int nGioc=1,nMossa=1;
+        int nGioc=1,nMossa=1,vr=a.posR,vc=a.posC;
         while(a.HaiVinto()==0&&!a.pareggio())    ///pareggio torna falso
         {
             settato=false;
             int vcol;
             while(!settato)
             {
-                a.DbModel.printmReal();
-                a.DbModel.printmSelection();
+                //a.DbModel.printmReal();
+                //a.DbModel.printmSelection();
+
                 settato=a.SelezioneTemp(nGioc,vcol);
 
+                b.setptemp(vr,vc,a.DbModel.mSelection[vr][vc]);
+                a.selposTemp(nGioc);
+
+                vr=a.posR;
+                vc=a.posC;
+                b.setptemp(a.posR,a.posC,a.DbModel.mSelection[a.posR][a.posC]);
+                a.selposTemp(vcol-2);
+
+                /**           FUNZIONA +/-
                 a.selposTemp(nGioc);
                 b.DisegnaM(d,a);
                 a.selposTemp(vcol-2);
+                */
             }
 
             a.setposReal(nGioc);
