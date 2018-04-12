@@ -163,6 +163,10 @@ public:
             if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
             if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr) Arriva(r+1,c+1,colcontr,rit);
             if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
+            if(c>1 &&    DbModel.matriceWin[r][c-1]==colcontr)  Arriva(r,c-1,colcontr,rit);
+            if(r>1 && c>1 &&   DbModel.matriceWin[r-1][c-1]==colcontr)  Arriva(r-1,c-1,colcontr,rit);
+
+            //
         }
 
         if (colcontr==2) ///verticale
@@ -172,6 +176,9 @@ public:
             if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
             if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr)  Arriva(r+1,c+1,colcontr,rit);
             if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
+            //
+            if(r>1 &&    DbModel.matriceWin[r-1][c]==colcontr)  Arriva(r-1,c,colcontr,rit);
+            if(r>1 && c>1 &&   DbModel.matriceWin[r-1][c-1]==colcontr)  Arriva(r-1,c-1,colcontr,rit);
         }
         return rit;
     }
