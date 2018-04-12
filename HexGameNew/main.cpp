@@ -294,14 +294,15 @@ class GraficHex
 {
 public:
     Tartaruga t;
-    float l=25;
+    float l;
     GraficHex(int d)
     {
+        l=400.0/d;
         t.Nasconditi();
         t.TempoPasso(0);
-        //Presentazione();
+        Presentazione();
         t.ClearScreen(Nero);
-        t.Salta(-250,-200);     ///Da sistemare le posizioni
+        t.Salta(-l*d/2,-l*d);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
 
     }
@@ -311,7 +312,7 @@ public:
     {
         t.ClearScreen(Nero);
         string s="Hex \n\n\n", a="By:    Samuele Stefanello";
-        t.Jump(-300,200);
+        t.Jump(-100,150);
         delay(300);
         for(int i=0; i<s.size(); i++)
         {
@@ -319,7 +320,7 @@ public:
             if(s[i]!=' '&&s[i]!='\n')
                 delay(150);
         }
-        t.Jump(-300,150);
+        t.Jump(-100,50);
         for(int i=0; i<a.size(); i++)
         {
             t<<a[i];
