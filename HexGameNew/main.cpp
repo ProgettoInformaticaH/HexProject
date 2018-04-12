@@ -233,14 +233,21 @@ public:
     void Presentazione()
     {
         t.ClearScreen(Nero);
-        string s="Hex \n\n\n By:    Samuele Stefanello";
+        string s="Hex \n\n\n", a="By:    Samuele Stefanello";
         t.Jump(-300,200);
         delay(300);
-        for(int i=0;i<s.size();i++)
+        for(int i=0; i<s.size(); i++)
         {
             t<<s[i];
             if(s[i]!=' '&&s[i]!='\n')
-            delay(150);
+                delay(150);
+        }
+        t.Jump(-300,150);
+        for(int i=0; i<a.size(); i++)
+        {
+            t<<a[i];
+            if(a[i]!=' '&&s[i]!='\n')
+                delay(150);
         }
         delay(1000);
     }
