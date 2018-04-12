@@ -90,7 +90,12 @@ public:
     int HaiVinto() //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
         {
             return 0;
+
         }
+    bool Arriva()
+    {
+
+    }
 
     bool pareggio()
     {
@@ -218,7 +223,7 @@ public:
         t.Nasconditi();
         t.TempoPasso(0);
         Presentazione();
-        t.ClearScreen();
+        t.ClearScreen(Nero);
         t.Salta(-250,-200);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
 
@@ -227,6 +232,7 @@ public:
 
     void Presentazione()
     {
+        t.ClearScreen(Nero);
         string s="Hex \n\n\n By:    Samuele Stefanello";
         t.Jump(-300,200);
         delay(300);
@@ -304,9 +310,32 @@ public:
 
 
 
-    void VisualeWin(int nGioc);
-    void Pareggio();
-    void NomeGioc();        //opzionale
+    void VisualeWin(int nGioc)
+    {
+        delay(2000);
+        t.ClearScreen(Bianco);
+        t.Home();
+        if (nGioc=1)    t.CambiaColorePennello(Rosso);
+        if (nGioc=2)    t.CambiaColorePennello(Blu);
+        t.Cerchio(200);
+        t.AlzaPennello();
+        t.Salta(-40,0);
+        t.AbbassaPennello();
+        t.CambiaColorePennello(Nero);
+        t<<"HAI VINTO!!!";
+    }
+    void Pareggio()
+        {
+        t.ClearScreen();
+        t.Home();
+        t.CambiaColorePennello(Bianco);
+        t.Cerchio(200);
+        t.AlzaPennello();
+        t.Salta(-40,0);
+        t.AbbassaPennello();
+        t.CambiaColorePennello(Nero);
+        t<<"PAREGGIO!!!";
+        }
 
 
     void EsagonoBase(Tartaruga & t,float l)
@@ -375,9 +404,6 @@ public:
             int vcol;
             while(!settato)
             {
-                //a.DbModel.printmReal();
-                //a.DbModel.printmSelection();
-
                 settato=a.SelezioneTemp(nGioc,vcol);
 
                 b.setptemp(vr,vc,a.DbModel.mSelection[vr][vc]);
@@ -387,13 +413,7 @@ public:
                 vc=a.posC;
                 b.setptemp(a.posR,a.posC,a.DbModel.mSelection[a.posR][a.posC]);
                 a.selposTemp(vcol-2);
-
-                /**           FUNZIONA +/-
-                a.selposTemp(nGioc);
-                b.DisegnaM(d,a);
-                a.selposTemp(vcol-2);
-                */
-            }
+             }
 
             a.setposReal(nGioc);
             b.setpallina(a);
@@ -404,11 +424,11 @@ public:
             else    nGioc=1;
 
         }
-        /*
+
         if(a.pareggio())
-            b.pareggio();
+            b.Pareggio();
         else
-            b.VisualeWin(a.HaiVinto());*/
+            b.VisualeWin(a.HaiVinto());
             WaitESC();
     }
 
