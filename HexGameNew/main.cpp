@@ -388,7 +388,12 @@ public:
         if(col==3)        t.CambiaColorePennello(RossoChiaro);
         if(col==4)        t.CambiaColorePennello(BluChiaro);
         t.AbbassaPennello();
-        t.Cerchio((l*2)/3);
+        //t.Cerchio((l*2)/3);
+        if(col==0)        t.RiempiColore(Grigio,Bianco);
+        if(col==1)        t.RiempiColore(Rosso,Bianco);
+        if(col==2)        t.RiempiColore(Blu,Bianco);
+        if(col==3)        t.RiempiColore(RossoChiaro,Bianco);
+        if(col==4)        t.RiempiColore(BluChiaro,Bianco);
     }
 
 
