@@ -333,14 +333,14 @@ public:
     }
     void Pareggio()
         {
-        t.ClearScreen();
+        t.ClearScreen(Bianco);
         t.Home();
-        t.CambiaColorePennello(Bianco);
+        t.CambiaColorePennello(Nero);
         t.Cerchio(200);
         t.AlzaPennello();
         t.Salta(-40,0);
         t.AbbassaPennello();
-        t.CambiaColorePennello(Nero);
+        t.CambiaColorePennello(Verde);
         t<<"PAREGGIO!!!";
         }
 
