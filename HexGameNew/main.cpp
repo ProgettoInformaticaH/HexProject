@@ -88,7 +88,7 @@ public:
             cout<<endl;
         }
     }
-        void printmMWin()
+    void printmMWin()
     {
         for(int i=0; i<matriceWin.size(); i++)
         {
@@ -117,30 +117,30 @@ public:
         d=d1;
 
     }
-    ///Funzioni da implementare
     int HaiVinto() //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
     {
         bool rit;
         int colcontr=1,p=1;
-        for (int i=1; i<d-2; i++)
+        for (int i=1; i<d-1; i++)
         {
+            rit=false;
             if (DbModel.matriceWin[i][p]==1)
             {
-                rit=false;
                 if (Arriva(i,p,colcontr,rit))
-                    {
-                       return colcontr;
-                    }
+                {
+                    return colcontr;
+                }
 
                 else SincWin();
             }
         }
         colcontr=2;
-        for (int i=1; i<d-2; i++)
+        for (int i=1; i<d-1; i++)
         {
+            rit=false;
             if (DbModel.matriceWin[p][i]==2)
             {
-                rit=false;
+
                 if (Arriva(p,i,colcontr,rit))
                 {
                     return colcontr;
@@ -158,25 +158,23 @@ public:
         if (colcontr==1) ///orizzontale
         {
 
-            if (c==d-2    &&    DbModel.matriceWin[r][d-2]==-1) rit= true;
+            if (c==d-2    &&    DbModel.matriceWin[r][c]==-1) rit= true;
             if(r>1   &&    DbModel.matriceWin[r-1][c]==colcontr) Arriva(r-1,c,colcontr,rit);
-            if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
-            if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr) Arriva(r+1,c+1,colcontr,rit);
-            if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
+            if(c<d-2 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
+            if(r<d-2 &&    c<d-2   &&    DbModel.matriceWin[r+1][c+1]==colcontr) Arriva(r+1,c+1,colcontr,rit);
+            if(r<d-2 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
             if(c>1 &&    DbModel.matriceWin[r][c-1]==colcontr)  Arriva(r,c-1,colcontr,rit);
             if(r>1 && c>1 &&   DbModel.matriceWin[r-1][c-1]==colcontr)  Arriva(r-1,c-1,colcontr,rit);
 
-            //
         }
 
         if (colcontr==2) ///verticale
         {
-            if (r==d-2    &&    DbModel.matriceWin[d-2][c]==-1) rit= true;
+            if (r==d-2    &&    DbModel.matriceWin[r][c]==-1) rit= true;
             if(c>1   &&    DbModel.matriceWin[r][c-1]==colcontr)  Arriva(r,c-1,colcontr,rit);
-            if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
-            if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr)  Arriva(r+1,c+1,colcontr,rit);
-            if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
-            //
+            if(r<d-2 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
+            if(r<d-2 &&    c<d-2   &&    DbModel.matriceWin[r+1][c+1]==colcontr)  Arriva(r+1,c+1,colcontr,rit);
+            if(c<d-2 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
             if(r>1 &&    DbModel.matriceWin[r-1][c]==colcontr)  Arriva(r-1,c,colcontr,rit);
             if(r>1 && c>1 &&   DbModel.matriceWin[r-1][c-1]==colcontr)  Arriva(r-1,c-1,colcontr,rit);
         }
@@ -185,14 +183,14 @@ public:
 
     bool pareggio()
     {
-        for(int i=0;i<d;i++)
-            for(int j=0;j<d;j++)
+        for(int i=0; i<d; i++)
+            for(int j=0; j<d; j++)
                 if(DbModel.mReal[i][j]==0) return false;
-            return true;
+        return true;
     }
 
 
-        void destra()
+    void destra()
     {
         if(posC<d-2&&posR>=1)   posC++;
     }
@@ -232,13 +230,32 @@ public:
     bool SelezioneTemp(int nGioc,int & vcol)
     {
         ///valori tasti
-            int tcor=KeyCode();
-            if(tcor==18432) {su(); vcol=getvalTemp();}
-            else if(tcor==19200) {sinistra(); vcol=getvalTemp();}
-            else if(tcor==19712) {destra(); vcol=getvalTemp();}
-            else if(tcor==20480) {giu(); vcol=getvalTemp();}
-            else if(tcor==32)    {if(spazio(nGioc)) return true;}
-            return false;
+        int tcor=KeyCode();
+        if(tcor==18432)
+        {
+            su();
+            vcol=getvalTemp();
+        }
+        else if(tcor==19200)
+        {
+            sinistra();
+            vcol=getvalTemp();
+        }
+        else if(tcor==19712)
+        {
+            destra();
+            vcol=getvalTemp();
+        }
+        else if(tcor==20480)
+        {
+            giu();
+            vcol=getvalTemp();
+        }
+        else if(tcor==32)
+        {
+            if(spazio(nGioc)) return true;
+        }
+        return false;
 
     }
 
@@ -248,14 +265,14 @@ public:
 
     void SincronizzaMatrice()
     {
-        for(int i=0;i<d;i++)
-            for(int j=0;j<d;j++)
+        for(int i=0; i<d; i++)
+            for(int j=0; j<d; j++)
                 DbModel.mSelection[i][j]=DbModel.mReal[i][j];
     }
-       void SincWin()
+    void SincWin()
     {
-        for(int i=0;i<d;i++)
-            for(int j=0;j<d;j++)
+        for(int i=0; i<d; i++)
+            for(int j=0; j<d; j++)
                 DbModel.matriceWin[i][j]=DbModel.mReal[i][j];
     }
 
@@ -281,7 +298,7 @@ public:
 
     int gtvalmGraf(int pc, int pr)
     {
-        return DbModel.mSelection[pr][pc];
+        return DbModel.mReal[pr][pc];
     }
     int posR=1;
     int posC=1;
@@ -302,7 +319,7 @@ public:
         t.TempoPasso(0);
         Presentazione();
         t.ClearScreen(Nero);
-        t.Salta(-l*d/2,-l*d);     ///Da sistemare le posizioni
+        t.Salta(-l*d*1.2,-(l*d)/1.5);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
 
     }
@@ -320,7 +337,7 @@ public:
             if(s[i]!=' '&&s[i]!='\n')
                 delay(150);
         }
-        t.Jump(-100,50);
+        t.Jump(-150,50);
         for(int i=0; i<a.size(); i++)
         {
             t<<a[i];
@@ -334,13 +351,13 @@ public:
     {
         float xc,xy;
         t.DoveSei(xc,xy);
-        for(int i=0;i<d;i++)
-            for(int j=0;j<d;j++)
-        {
-            t.Salta(xc,xy);
-            setposColore(i,j,m.gtvalmGraf(i,j));
-            t.D(60);
-        }
+        for(int i=0; i<d; i++)
+            for(int j=0; j<d; j++)
+            {
+                t.Salta(xc,xy);
+                setposColore(i,j,m.gtvalmGraf(i,j));
+                t.D(60);
+            }
         t.Salta(xc,xy);
     }
 
@@ -353,7 +370,7 @@ public:
         t.D(60);
     }
 
-       void setptemp(int posR,int posC,int col)
+    void setptemp(int posR,int posC,int col)
     {
         float xc,xy;
         t.DoveSei(xc,xy);
@@ -366,7 +383,7 @@ public:
     void setposColore(int posR,int posC,int col)       //Data il colore e la posizione degli indici lo colora
     {
         t.AlzaPennello();
-        for(int i=0;i<=posC;i++)
+        for(int i=0; i<=posC; i++)
         {
             t.A(l);
             t.D(60);
@@ -374,7 +391,7 @@ public:
             t.S(60);
         }
         t.D(120);
-        for(int i=0;i<=posR;i++)
+        for(int i=0; i<=posR; i++)
         {
             t.A(l);
             t.D(60);
@@ -383,18 +400,18 @@ public:
         }
         t.S(180);
         t.A(l);
-        if(col==0)        t.CambiaColorePennello(Bianco);
-        if(col==1)        t.CambiaColorePennello(Rosso);
-        if(col==2)        t.CambiaColorePennello(Blu);
-        if(col==3)        t.CambiaColorePennello(RossoChiaro);
-        if(col==4)        t.CambiaColorePennello(BluChiaro);
+        if(col==0)             t.CambiaColorePennello(Bianco);
+        else if(col==1)        t.CambiaColorePennello(Rosso);
+        else if(col==2)        t.CambiaColorePennello(Blu);
+        else if(col==3)        t.CambiaColorePennello(RossoChiaro);
+        else if(col==4)        t.CambiaColorePennello(BluChiaro);
         t.AbbassaPennello();
         //t.Cerchio((l*2)/3);
         if(col==0)        t.RiempiColore(Grigio,Bianco);
-        if(col==1)        t.RiempiColore(Rosso,Bianco);
-        if(col==2)        t.RiempiColore(Blu,Bianco);
-        if(col==3)        t.RiempiColore(RossoChiaro,Bianco);
-        if(col==4)        t.RiempiColore(BluChiaro,Bianco);
+        else if(col==1)        t.RiempiColore(Rosso,Bianco);
+        else if(col==2)        t.RiempiColore(Blu,Bianco);
+        else if(col==3)        t.RiempiColore(RossoChiaro,Bianco);
+        else if(col==4)        t.RiempiColore(BluChiaro,Bianco);
     }
 
 
@@ -412,21 +429,20 @@ public:
 
     }
     void Pareggio()
-        {
+    {
         t.ClearScreen(Bianco);
         t.Home();
-        t.CambiaColorePennello(Nero);
+        t.CambiaColorePennello(Verde);
         t.Cerchio(200);
         t.Salta(-40,-300);
-        t.CambiaColorePennello(Verde);
         t<<"PAREGGIO!!!";
-        }
+    }
 
 
     void EsagonoBase(Tartaruga & t,float l)
     {
 
-        for (int i=0;i<6;i++)
+        for (int i=0; i<6; i++)
         {
             t.A(l);
             t.S(60);
@@ -436,9 +452,9 @@ public:
     void GrigliaEsagono(Tartaruga & t,float l,int d)       //Lasciata in secondo piano sempre
     {
         t.D(120);
-        for (int j=0;j<d;j++)
+        for (int j=0; j<d; j++)
         {
-            for (int i=0;i<d;i++)
+            for (int i=0; i<d; i++)
             {
                 EsagonoBase(t,l);
                 //t.CambiaColorePennello(Rosso);
@@ -451,7 +467,7 @@ public:
             t.S(120);
             t.A(l);
             t.S(60);
-            for (int p=0;p<d-1;p++)
+            for (int p=0; p<d-1; p++)
             {
                 t.A(l);
                 t.S(60);
@@ -476,7 +492,23 @@ class Game
 public:
     Game()
     {
-        int d=10;
+        int d=0;
+        Tartaruga pippo(1920,1080);
+        pippo.Nasconditi();
+        pippo.ClearScreen(Nero);
+        pippo.Salta(-100,100);
+        pippo<<"Quante caselle vuoi per riga e colonna?(3-100)"<<endl;
+        pippo.Salta(-100,0);
+        pippo>>d;
+        while(d<3||d>100)
+        {
+            pippo.ClearScreen(Nero);
+            pippo.Salta(-100,100);
+            pippo<<"Inserisci un valore da 3 a 100!!!"<<endl;
+            pippo.Salta(-100,0);
+            pippo>>d;
+        }
+        d=d+2;
         ///Usata come classe debug adesso successivamente come unica classe da usare nel main
         ModelHex a(d);
         GraficHex b(d);
@@ -499,7 +531,7 @@ public:
                 vc=a.posC;
                 b.setptemp(a.posR,a.posC,a.DbModel.mSelection[a.posR][a.posC]);
                 a.selposTemp(vcol-2);
-             }
+            }
 
             a.setposReal(nGioc);
             b.setpallina(a);
@@ -511,12 +543,15 @@ public:
             else    nGioc=1;
 
         }
-
+        delay(2000);
         if(a.pareggio())
             b.Pareggio();
         else
             b.VisualeWin(a.HaiVinto());
-            WaitESC();
+        b.t.Salta(-65,-325);
+        b.t<<endl<<"Press any key to exit";
+        string uscita;
+        b.t>>uscita;
     }
 
 
