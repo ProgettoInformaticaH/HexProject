@@ -9,7 +9,7 @@ class DatabaseHex
 public:
     void resM(int d)
     {
-        //Resize mSelection
+        ///Resize mSelection
         mSelection.resize(d);
         for(int i=0; i<d; i++)  mSelection[i].resize(d);
         //Inizializzazione a 0 mSelection
@@ -26,7 +26,7 @@ public:
             mSelection[d-(1+i)][0]=2; //Blu
         }
 
-        //Resize mReal
+        ///Resize mReal
         mReal.resize(d);
         for(int i=0; i<d; i++)  mReal[i].resize(d);
         //Inizializzazione a 0 mReal
@@ -41,10 +41,30 @@ public:
             mReal[d-1][d-(1+i)]=1; //Rosso
             mReal[d-(1+i)][0]=2; //Blu
         }
+
+
+
+        ///Resize Matrice win
+        matriceWin.resize(d);
+        for(int i=0; i<d; i++)  matriceWin[i].resize(d);
+        //Inizializzazione a 0 matriceWin
+        for(int i=0; i<d; i++)
+            for(int j=0; j<d; j++)
+                matriceWin[i][j]=0;
+        //inizializzo i bordi
+        for(int i=0; i<d-1; i++)
+        {
+            matriceWin[0][i]=1; //Rosso
+            matriceWin[i][d-1]=2; //Blu
+            matriceWin[d-1][d-(1+i)]=1; //Rosso
+            matriceWin[d-(1+i)][0]=2; //Blu
+        }
     }
 
     vector < vector <int> > mSelection;
     vector < vector <int> > mReal;
+    vector < vector <int> > matriceWin;
+
 
     void printmReal()
     {
@@ -64,6 +84,17 @@ public:
             for(int j=0; j<mSelection.size(); j++)
             {
                 cout<<mSelection[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+    }
+        void printmMWin()
+    {
+        for(int i=0; i<matriceWin.size(); i++)
+        {
+            for(int j=0; j<matriceWin.size(); j++)
+            {
+                cout<<matriceWin[i][j]<<" ";
             }
             cout<<endl;
         }
@@ -88,13 +119,61 @@ public:
     }
     ///Funzioni da implementare
     int HaiVinto() //Controlla se uno dei due giocatori ha vinto e ne restituisce il numero, altrimenti torna 0
-        {
-            return 0;
-
-        }
-    bool Arriva()
     {
+        bool rit;
+        int colcontr=1,p=1;
+        for (int i=1; i<d-2; i++)
+        {
+            if (DbModel.matriceWin[i][p]==1)
+            {
+                rit=false;
+                if (Arriva(i,p,colcontr,rit))
+                    {
+                       return colcontr;
+                    }
 
+                else SincWin();
+            }
+        }
+        colcontr=2;
+        for (int i=1; i<d-2; i++)
+        {
+            if (DbModel.matriceWin[p][i]==2)
+            {
+                rit=false;
+                if (Arriva(p,i,colcontr,rit))
+                {
+                    return colcontr;
+                }
+
+                else SincWin();
+            }
+        }
+        return 0;
+
+    }
+    bool Arriva(int r, int c,int & colcontr,bool & rit )
+    {
+        DbModel.matriceWin[r][c]=-1;
+        if (colcontr==1) ///orizzontale
+        {
+
+            if (c==d-2    &&    DbModel.matriceWin[r][d-2]==-1) rit= true;
+            if(r>1   &&    DbModel.matriceWin[r-1][c]==colcontr) Arriva(r-1,c,colcontr,rit);
+            if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
+            if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr) Arriva(r+1,c+1,colcontr,rit);
+            if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
+        }
+
+        if (colcontr==2) ///verticale
+        {
+            if (r==d-2    &&    DbModel.matriceWin[d-2][c]==-1) rit= true;
+            if(c>1   &&    DbModel.matriceWin[r][c-1]==colcontr)  Arriva(r,c-1,colcontr,rit);
+            if(r<d-1 &&    DbModel.matriceWin[r+1][c]==colcontr)  Arriva(r+1,c,colcontr,rit);
+            if(r<d-1 &&    c<d-1   &&    DbModel.matriceWin[r+1][c+1]==colcontr)  Arriva(r+1,c+1,colcontr,rit);
+            if(c<d-1 &&    DbModel.matriceWin[r][c+1]==colcontr)  Arriva(r,c+1,colcontr,rit);
+        }
+        return rit;
     }
 
     bool pareggio()
@@ -108,25 +187,12 @@ public:
 
         void destra()
     {
-
-        if(posC<d-2&&posR>=1)
-        {
-            posC++;
-            //posR--;
-        }
-
-
+        if(posC<d-2&&posR>=1)   posC++;
     }
 
     void sinistra()
     {
-        if(posC>1&&posR<d-1)
-        {
-            posC--;
-            //posR++;
-        }
-
-
+        if(posC>1&&posR<d-1)    posC--;
     }
 
     void su()
@@ -160,13 +226,11 @@ public:
     {
         ///valori tasti
             int tcor=KeyCode();
-            //grf.setptemp(posR,posC,0);
             if(tcor==18432) {su(); vcol=getvalTemp();}
             else if(tcor==19200) {sinistra(); vcol=getvalTemp();}
             else if(tcor==19712) {destra(); vcol=getvalTemp();}
             else if(tcor==20480) {giu(); vcol=getvalTemp();}
             else if(tcor==32)    {if(spazio(nGioc)) return true;}
-            //grf.setptemp(posR,posC,getvalTemp());
             return false;
 
     }
@@ -180,6 +244,12 @@ public:
         for(int i=0;i<d;i++)
             for(int j=0;j<d;j++)
                 DbModel.mSelection[i][j]=DbModel.mReal[i][j];
+    }
+       void SincWin()
+    {
+        for(int i=0;i<d;i++)
+            for(int j=0;j<d;j++)
+                DbModel.matriceWin[i][j]=DbModel.mReal[i][j];
     }
 
     int getvalReal()
@@ -222,7 +292,7 @@ public:
     {
         t.Nasconditi();
         t.TempoPasso(0);
-        Presentazione();
+        //Presentazione();
         t.ClearScreen(Nero);
         t.Salta(-250,-200);     ///Da sistemare le posizioni
         GrigliaEsagono(t,l,d);
@@ -319,17 +389,14 @@ public:
 
     void VisualeWin(int nGioc)
     {
-        delay(2000);
         t.ClearScreen(Bianco);
         t.Home();
-        if (nGioc=1)    t.CambiaColorePennello(Rosso);
-        if (nGioc=2)    t.CambiaColorePennello(Blu);
+        if (nGioc==1)    t.CambiaColorePennello(Rosso);
+        if (nGioc==2)    t.CambiaColorePennello(Blu);
         t.Cerchio(200);
-        t.AlzaPennello();
-        t.Salta(-40,0);
-        t.AbbassaPennello();
-        t.CambiaColorePennello(Nero);
-        t<<"HAI VINTO!!!";
+        t.Salta(-40,-300);
+        t<<"Hai Vinto!!!";
+
     }
     void Pareggio()
         {
@@ -337,9 +404,7 @@ public:
         t.Home();
         t.CambiaColorePennello(Nero);
         t.Cerchio(200);
-        t.AlzaPennello();
-        t.Salta(-40,0);
-        t.AbbassaPennello();
+        t.Salta(-40,-300);
         t.CambiaColorePennello(Verde);
         t<<"PAREGGIO!!!";
         }
@@ -407,6 +472,7 @@ public:
         int nGioc=1,nMossa=1,vr=a.posR,vc=a.posC;
         while(a.HaiVinto()==0&&!a.pareggio())    ///pareggio torna falso
         {
+            int vitt=a.HaiVinto();
             settato=false;
             int vcol;
             while(!settato)
@@ -425,6 +491,7 @@ public:
             a.setposReal(nGioc);
             b.setpallina(a);
             a.SincronizzaMatrice();
+            a.SincWin();
             nMossa++;
 
             if(nMossa%2==0) nGioc=2;
