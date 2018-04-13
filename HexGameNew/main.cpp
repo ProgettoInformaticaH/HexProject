@@ -181,13 +181,6 @@ public:
         return rit;
     }
 
-    bool pareggio()
-    {
-        for(int i=0; i<d; i++)
-            for(int j=0; j<d; j++)
-                if(DbModel.mReal[i][j]==0) return false;
-        return true;
-    }
 
 
     void destra()
@@ -319,9 +312,8 @@ public:
         t.TempoPasso(0);
         Presentazione();
         t.ClearScreen(Nero);
-        t.Salta(-l*d*1.2,-(l*d)/1.5);     ///Da sistemare le posizioni
+        t.Salta(-l*d*1.2,-(l*d)/1.5);
         GrigliaEsagono(t,l,d);
-
     }
 
 
@@ -417,27 +409,18 @@ public:
 
 
 
-    void VisualeWin(int nGioc)
+    void VisualeWin(int nGioc,ModelHex a)
     {
-        t.ClearScreen(Bianco);
-        t.Home();
         if (nGioc==1)    t.CambiaColorePennello(Rosso);
         if (nGioc==2)    t.CambiaColorePennello(Blu);
-        t.Cerchio(200);
-        t.Salta(-40,-300);
+        t.Salta(-l*a.d*1.2,(l*a.d)/1.5);
+        t.Cerchio(150);
+        t.Salta(l*a.d*1.2,-(l*a.d)/1.5);
+        t.Cerchio(150);
+        t.Salta(-40,-330);
         t<<"Hai Vinto!!!";
 
     }
-    void Pareggio()
-    {
-        t.ClearScreen(Bianco);
-        t.Home();
-        t.CambiaColorePennello(Verde);
-        t.Cerchio(200);
-        t.Salta(-40,-300);
-        t<<"PAREGGIO!!!";
-    }
-
 
     void EsagonoBase(Tartaruga & t,float l)
     {
@@ -497,14 +480,14 @@ public:
         pippo.Nasconditi();
         pippo.ClearScreen(Nero);
         pippo.Salta(-100,100);
-        pippo<<"Quante caselle vuoi per riga e colonna?(3-100)"<<endl;
+        pippo<<"Quante caselle vuoi per riga e colonna?(7-20)"<<endl;
         pippo.Salta(-100,0);
         pippo>>d;
-        while(d<3||d>100)
+        while(d<7||d>20)
         {
             pippo.ClearScreen(Nero);
             pippo.Salta(-100,100);
-            pippo<<"Inserisci un valore da 3 a 100!!!"<<endl;
+            pippo<<"Inserisci un valore da 7 a 20!!!"<<endl;
             pippo.Salta(-100,0);
             pippo>>d;
         }
@@ -515,7 +498,7 @@ public:
         b.DisegnaM(d,a);
         bool settato;
         int nGioc=1,nMossa=1,vr=a.posR,vc=a.posC;
-        while(a.HaiVinto()==0&&!a.pareggio())    ///pareggio torna falso
+        while(a.HaiVinto()==0/*&&!a.pareggio()*/)
         {
             int vitt=a.HaiVinto();
             settato=false;
@@ -543,12 +526,10 @@ public:
             else    nGioc=1;
 
         }
-        delay(2000);
-        if(a.pareggio())
-            b.Pareggio();
-        else
-            b.VisualeWin(a.HaiVinto());
-        b.t.Salta(-65,-325);
+        b.VisualeWin(a.HaiVinto(),a);
+        /*if(a.pareggio())
+            b.Pareggio(a);*/
+        b.t.Salta(-65,-350);
         b.t<<endl<<"Press any key to exit";
         string uscita;
         b.t>>uscita;
