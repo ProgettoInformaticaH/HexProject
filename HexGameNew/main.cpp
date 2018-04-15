@@ -244,7 +244,7 @@ public:
             giu();
             vcol=getvalTemp();
         }
-        else if(tcor==32)
+        else if(tcor==32||tcor==13)
         {
             if(spazio(nGioc)) return true;
         }
@@ -473,10 +473,10 @@ public:
 class Game
 {
 public:
-    Game()
+    void Play()
     {
         int d=0;
-        Tartaruga pippo(1920,1080);
+        Tartaruga pippo(1440,850);
         pippo.Nasconditi();
         pippo.ClearScreen(Nero);
         pippo.Salta(-100,100);
@@ -527,19 +527,21 @@ public:
 
         }
         b.VisualeWin(a.HaiVinto(),a);
-        /*if(a.pareggio())
-            b.Pareggio(a);*/
-        b.t.Salta(-65,-350);
-        b.t<<endl<<"Press any key to exit";
-        string uscita;
-        b.t>>uscita;
-    }
 
+        b.t.Salta(-125,-330);
+        b.t<<endl<<"Press any key to Replay o press ESC to exit";
+        int uscita;
+        uscita=KeyCode();
+        if (uscita!=27)
+        Play();
+    }
 
 };
 
 int main()
 {
     Game Gioco;
+    Gioco.Play();
+
     return 0;
 }
